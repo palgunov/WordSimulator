@@ -23,7 +23,10 @@ window.addEventListener("load", function () {
     const limitQuestions = 5;
     let currentQuestion = 0;
     let currentLetter = 0;
+    let mistakes = 0;
+    let mistakesInThisWord =0;
 
+    let mistakesOfAllString = document.querySelector("#mistakes");
     let answerContainer = document.querySelector("#answer");
     let letters = document.querySelector("#letters");
     let currentQuestionElem = document.querySelector("#current_question");
@@ -52,7 +55,11 @@ window.addEventListener("load", function () {
     displayCurrentQuestion();
 
     letters.addEventListener("click", function (event) {
-        if (event.target.tagName === "BUTTON") {
+        if(event.target.id === "reload") {
+            window.location.reload();
+
+        }else if(event.target.tagName === "BUTTON") {
+
             let btn = event.target;
             let word = dictionary[currentQuestion];
 
@@ -70,9 +77,14 @@ window.addEventListener("load", function () {
             		currentLetter = 0;
             		currentQuestion++;
 
+                    if(mistakesInThisWord > 0){
+                    mistakesInThisWord=0;
+                    mistakesOfAllString.innerHTML = "<br>"+" Всего ошибок: " + mistakes +"<br>";}
+
             		// если мы дошли до последнего вопроса
             		if (currentQuestion >= limitQuestions) {
-            			letters.innerHTML = "<div class='alert alert-success'>Вы успешно справились со всеми заданиями!</div>";
+            			letters.innerHTML = "<div class='alert alert-success'>Вы успешно справились со всеми заданиями!" +
+							"<button id='reload' class=\"btn btn-sm mr-1 btn-success\">Начать сначала</button></div>";
 					} else {
                         displayCurrentQuestion();
 					}
@@ -80,6 +92,9 @@ window.addEventListener("load", function () {
 			} else {
                 btn.classList.remove("btn-primary");
                 btn.classList.add("btn-danger");
+                mistakes++;
+                mistakesInThisWord++;
+                mistakesOfAllString.innerHTML = "<br>"+" Всего ошибок: " + mistakes +"<br>"+ " Ошибок в этом слове: " + mistakesInThisWord + "<br>" ;
 
                 setTimeout(() => {
                 	btn.classList.remove("btn-danger");
